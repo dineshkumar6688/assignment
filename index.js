@@ -2,7 +2,6 @@ const express = require('express');
 const BodyParser = require("body-parser");
 const app = express();
 app.use(BodyParser.json());
-const port=3000;
 var database;
 
 var MongoClient = require('mongodb').MongoClient
@@ -64,12 +63,4 @@ app.get("/", function(req, res) {
         console.log("Database has been successfully connected")
     });
 
-    app.listen(port || process.env,(err)=>{
-        if(err)
-        {
-            console.log(err)
-        }
-        else{
-            console.log(`Server running on ${port}`)
-        }
-    })
+    app.listen(3000 || process.env)
