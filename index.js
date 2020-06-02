@@ -60,7 +60,7 @@ app.get("/", function(req, res) {
            console.log(error)
         }
         database = client.db(db_Name);
+        app.listen(process.env.PORT || 3000 )
         console.log("Database has been successfully connected")
     });
 
-    app.listen(3000 || process.env)
