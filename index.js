@@ -14,17 +14,31 @@ const db_Name="assignment";
 
 app.get("/", function(req, res) {
     try {
-      if(req.query.name == undefined || req.query.name == null || req.query.name == ""){
+      if((req.query.name == undefined || req.query.name == null || req.query.name == "") && (req.query.limit == undefined || req.query.limit == null || req.query.limit == "")){
         database.collection("assignment-data").findOne({}, function(err, result) {
           if (err) res.status(400).send('Data Retrieval has been Failed!!');
           else res.status(200).send(result.data);
       });
       }
-      else{
+      else if(req.query.limit != undefined && req.query.limit != null && req.query.limit != ""){
         database.collection('assignment-data').aggregate([ 
           { "$match": { "_id": ObjectId('5ed69e5d8a6858a599637bd1') } },
           { "$unwind": "$data" },
-          { "$match": { "data.name": req.query.name } }
+          {'$facet':{
+            data: [ {$limit: parseInt(req.query.limit) }]
+          }},
+        ]).toArray(
+        function(err, result) {
+          if (err) res.status(400).send('Data not found');
+          else res.status(200).send(result[0].data);
+        })
+      }
+      else if(req.query.name != undefined && req.query.name != null && req.query.name != ""){
+        console.log(req.query)
+        database.collection('assignment-data').aggregate([ 
+          { "$match": { "_id": ObjectId('5ed69e5d8a6858a599637bd1') } },
+          { "$unwind": "$data" },
+          { "$match": { "data.name": req.query.name } },
         ]).toArray(
         function(err, result) {
           if (err) res.status(400).send('Data not found');
